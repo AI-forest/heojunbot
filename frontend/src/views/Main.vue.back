@@ -85,6 +85,9 @@ export default {
   beforeCreate: function () {
      this.$http.post('/api/connect')
     .then(res => {
+      this.chatflowId = res.data.chatflow_id
+      this.sessionId = res.data.session_id
+      this.insId = res.data.ins_id
       let response = res.data.welcome
       for(let i=0;i<response.length;i++) {
           this.chats.push({
@@ -114,8 +117,8 @@ export default {
         content: option.label,
         date: new Date()
       })
-      //this.$forceUpdate()
-      //this.scrollToBottom()
+      this.$forceUpdate()
+      this.scrollToBottom()
       this.$http.post('/api/send', {
         msg: option.value,
         session_id: this.sessionId,
@@ -128,13 +131,13 @@ export default {
         this.sessionId = res.data.session_id
         this.insId = res.data.ins_id
         this.paramId = res.data.param_id
-        //console.log(res.data.data)
+        console.log(res.data.data)
         let response = res.data.response
         for(let i=0;i<response.length;i++) {
           this.chats.push({
             isBot: true,
             image: response[i].imgRoute,
-            //isMap: response[i].message.indexOf('@map') != -1,
+            isMap: response[i].message.indexOf('@map') != -1,
             content: response[i].message.replace('(핑퐁[pingpong.us]에서 생성된 자동답변입니다)', ''),
             date: new Date()
           })
@@ -194,6 +197,7 @@ export default {
             content: response[i].message.replace('(핑퐁[pingpong.us]에서 생성된 자동답변입니다)', ''),
             date: new Date()
           })
+          //is.shake()
           if(response[i].optionList && response[i].optionList.length > 1) {
             console.log(this.optionList)
             this.optionList = response[i].optionList
